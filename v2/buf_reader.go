@@ -172,7 +172,8 @@ func (br *bufReader) ReadText(encoding Encoding) []byte {
 	// See https://github.com/bogem/id3v2/issues/51.
 	if encoding.Equals(EncodingUTF16) &&
 		// See https://github.com/bogem/id3v2/issues/53#issuecomment-604038434.
-		!bytes.Equal(text, bom) {
+		!bytes.Equal(text, bom) &&
+		bytes.Equal(text[:2], bom) {
 		text = append(text, br.ReadByte())
 	}
 

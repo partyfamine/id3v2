@@ -89,6 +89,7 @@ var (
 // bom is used in UTF-16 encoded Unicode with BOM.
 // See https://en.wikipedia.org/wiki/Byte_order_mark.
 var bom = []byte{0xFF, 0xFE}
+var bomBE = []byte{0xFE, 0xFF}
 
 // getEncoding returns Encoding in accordance with ID3v2 key.
 func getEncoding(key byte) Encoding {
@@ -159,7 +160,7 @@ func encodeWriteText(bw *bufWriter, src string, to Encoding) error {
 
 	bw.WriteString(encoded)
 
-	if to.Equals(EncodingUTF16) && !bytes.HasSuffix([]byte(encoded), []byte{0}) {
+	if to.Equals(EncodingUTF16) && !bytes.HasSuffix([]byte(encoded), []byte{0}) && !bytes.Equal([]byte(encoded[:2]), bomBE) {
 		bw.WriteByte(0)
 	}
 
